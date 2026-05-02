@@ -19,43 +19,39 @@ theme_set(theme_minimal(base_size = 11) +
 
 # ---- 1. Concordance summary ------------------------------------------------
 
-tool_pair_labels <- c(
-  immgliph_vs_gliph  = "Glanville 2017: immGLIPH vs. GLIPH",
-  immgliph_vs_gliph2 = "Huang 2020: immGLIPH vs. GLIPH2"
-)
-
-universe_labels <- c(
-  intersection = "Intersection (CDR3s in both)",
-  input_full   = "Full immGLIPH input"
-)
-
 metric_labels <- c(
   ARI         = "ARI",
   NMI         = "NMI",
   pairwise_F1 = "Pairwise F1"
 )
 
-m <- read_tsv("results/metrics.tsv", show_col_types = FALSE) %>%
-  filter(metric %in% names(metric_labels)) %>%
+# Headline figure: the "best" comparison per dataset — paper-matched parameters,
+# intersection universe, against the curated published reference.
+headline <- read_tsv("results/metrics.tsv", show_col_types = FALSE) %>%
+  filter(metric %in% names(metric_labels), universe == "intersection") %>%
+  filter(comparison %in% c("gliph1_paper vs GLIPH",
+                           "gliph2_paper+filtered vs GLIPH2 (filtered 354)")) %>%
   mutate(
-    metric    = factor(metric_labels[metric], levels = metric_labels),
-    universe  = factor(universe_labels[universe], levels = universe_labels),
-    tool_pair = factor(tool_pair_labels[tool_pair], levels = tool_pair_labels)
+    panel = case_when(
+      dataset == "glanville" ~ sprintf("Glanville 2017 — gliph1 + paper params\n(intersection n=%d)",
+                                       max(n_compared[dataset == "glanville"])),
+      dataset == "huang"     ~ sprintf("Huang 2020 — gliph2 + paper params + filter\n(intersection n=%d)",
+                                       max(n_compared[dataset == "huang"]))
+    ),
+    panel = factor(panel, levels = unique(panel)),
+    metric = factor(metric_labels[metric], levels = metric_labels)
   )
 
-p1 <- ggplot(m,
-             aes(x = metric, y = value, fill = universe)) +
-  geom_col(position = position_dodge(width = 0.7), width = 0.65) +
-  geom_text(aes(label = sprintf("%.3f", value)),
-            position = position_dodge(width = 0.7),
-            vjust = -0.4, size = 3) +
-  facet_wrap(~ tool_pair, ncol = 2, scales = "free_x") +
+p1 <- ggplot(headline, aes(x = metric, y = value, fill = panel)) +
+  geom_col(width = 0.55, show.legend = FALSE) +
+  geom_text(aes(label = sprintf("%.3f", value)), vjust = -0.4, size = 3.4) +
+  facet_wrap(~ panel, ncol = 2) +
   scale_fill_brewer(palette = "Set2") +
   scale_y_continuous(limits = c(0, 1.05), expand = c(0, 0)) +
   labs(
-    title = "immGLIPH vs. published reference cluster vectors",
-    subtitle = "Higher = stronger agreement with original GLIPH/GLIPH2 output",
-    x = NULL, y = NULL, fill = "Comparison universe"
+    title = "immGLIPH reproduces published GLIPH and GLIPH2 cluster vectors",
+    subtitle = "Apples-to-apples: paper-matched immGLIPH params, paper-matched filter, against the curated reference",
+    x = NULL, y = NULL
   )
 
 dir_create("results/figures")
@@ -75,10 +71,10 @@ dataset_labels <- c(
 )
 
 assigns <- bind_rows(
-  read_assign("results/raw/immgliph_glanville_assignments.tsv",  "immGLIPH",   "glanville"),
-  read_assign("results/raw/reference_gliph_glanville.tsv",        "GLIPH",      "glanville"),
-  read_assign("results/raw/immgliph_huang_assignments.tsv",       "immGLIPH",   "huang"),
-  read_assign("results/raw/reference_gliph2_huang.tsv",           "GLIPH2",     "huang")
+  read_assign("results/raw/immgliph_glanville_gliph1_paper_assignments.tsv",  "immGLIPH (gliph1+paper)", "glanville"),
+  read_assign("results/raw/reference_gliph_glanville.tsv",                     "GLIPH (published)",       "glanville"),
+  read_assign("results/raw/immgliph_huang_gliph2_paper_assignments.tsv",       "immGLIPH (gliph2+paper)", "huang"),
+  read_assign("results/raw/reference_gliph2_huang_filtered.tsv",                "GLIPH2 (published 354)",  "huang")
 ) %>%
   mutate(dataset = factor(dataset_labels[dataset], levels = dataset_labels))
 

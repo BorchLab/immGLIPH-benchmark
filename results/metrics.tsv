@@ -1,21 +1,71 @@
-dataset	tool_pair	universe	n_compared	metric	value
-glanville	immgliph_vs_gliph	intersection	117	ARI	0.7538520254478127
-glanville	immgliph_vs_gliph	intersection	117	NMI	0.8986454887083375
-glanville	immgliph_vs_gliph	intersection	117	pairwise_precision	1
-glanville	immgliph_vs_gliph	intersection	117	pairwise_recall	0.6134453781512605
-glanville	immgliph_vs_gliph	intersection	117	pairwise_F1	0.7604166666666667
-glanville	immgliph_vs_gliph	input_full	379	ARI	0.41307993526928605
-glanville	immgliph_vs_gliph	input_full	379	NMI	0.8942704325572316
-glanville	immgliph_vs_gliph	input_full	379	pairwise_precision	0.42565597667638483
-glanville	immgliph_vs_gliph	input_full	379	pairwise_recall	0.40668523676880225
-glanville	immgliph_vs_gliph	input_full	379	pairwise_F1	0.41595441595441596
-huang	immgliph_vs_gliph2	intersection	1931	ARI	0.7692778294046887
-huang	immgliph_vs_gliph2	intersection	1931	NMI	0.977467802637199
-huang	immgliph_vs_gliph2	intersection	1931	pairwise_precision	0.8215488215488216
-huang	immgliph_vs_gliph2	intersection	1931	pairwise_recall	0.7236061684460261
-huang	immgliph_vs_gliph2	intersection	1931	pairwise_F1	0.7694733522548093
-huang	immgliph_vs_gliph2	input_full	7357	ARI	0.24529365560834482
-huang	immgliph_vs_gliph2	input_full	7357	NMI	0.924202489664697
-huang	immgliph_vs_gliph2	input_full	7357	pairwise_precision	0.6971428571428572
-huang	immgliph_vs_gliph2	input_full	7357	pairwise_recall	0.14888943129118867
-huang	immgliph_vs_gliph2	input_full	7357	pairwise_F1	0.24537409493161705
+dataset	comparison	universe	n_compared	metric	value
+glanville	gliph2_default vs GLIPH	intersection	117	ARI	0.7538520254478127
+glanville	gliph2_default vs GLIPH	intersection	117	NMI	0.8986454887083375
+glanville	gliph2_default vs GLIPH	intersection	117	pairwise_precision	1
+glanville	gliph2_default vs GLIPH	intersection	117	pairwise_recall	0.6134453781512605
+glanville	gliph2_default vs GLIPH	intersection	117	pairwise_F1	0.7604166666666667
+glanville	gliph2_default vs GLIPH	input_full	379	ARI	0.41307993526928605
+glanville	gliph2_default vs GLIPH	input_full	379	NMI	0.8942704325572316
+glanville	gliph2_default vs GLIPH	input_full	379	pairwise_precision	0.42565597667638483
+glanville	gliph2_default vs GLIPH	input_full	379	pairwise_recall	0.40668523676880225
+glanville	gliph2_default vs GLIPH	input_full	379	pairwise_F1	0.41595441595441596
+glanville	gliph1_paper vs GLIPH	intersection	144	ARI	0.9849245053902409
+glanville	gliph1_paper vs GLIPH	intersection	144	NMI	0.9936509497655027
+glanville	gliph1_paper vs GLIPH	intersection	144	pairwise_precision	1
+glanville	gliph1_paper vs GLIPH	intersection	144	pairwise_recall	0.970873786407767
+glanville	gliph1_paper vs GLIPH	intersection	144	pairwise_F1	0.9852216748768473
+glanville	gliph1_paper vs GLIPH	input_full	388	ARI	0.5803254272893085
+glanville	gliph1_paper vs GLIPH	input_full	388	NMI	0.9232124119994617
+glanville	gliph1_paper vs GLIPH	input_full	388	pairwise_precision	0.6097560975609756
+glanville	gliph1_paper vs GLIPH	input_full	388	pairwise_recall	0.5571030640668524
+glanville	gliph1_paper vs GLIPH	input_full	388	pairwise_F1	0.5822416302765647
+glanville	gliph1_paper+filtered vs GLIPH	intersection	21	ARI	1
+glanville	gliph1_paper+filtered vs GLIPH	intersection	21	NMI	1
+glanville	gliph1_paper+filtered vs GLIPH	intersection	21	pairwise_precision	1
+glanville	gliph1_paper+filtered vs GLIPH	intersection	21	pairwise_recall	1
+glanville	gliph1_paper+filtered vs GLIPH	intersection	21	pairwise_F1	1
+glanville	gliph1_paper+filtered vs GLIPH	input_full	172	ARI	0.16952010461775632
+glanville	gliph1_paper+filtered vs GLIPH	input_full	172	NMI	0.7374364935439832
+glanville	gliph1_paper+filtered vs GLIPH	input_full	172	pairwise_precision	1
+glanville	gliph1_paper+filtered vs GLIPH	input_full	172	pairwise_recall	0.0947075208913649
+glanville	gliph1_paper+filtered vs GLIPH	input_full	172	pairwise_F1	0.17302798982188297
+huang	gliph2_default vs GLIPH2 (raw 4185)	intersection	1931	ARI	0.7692778294046887
+huang	gliph2_default vs GLIPH2 (raw 4185)	intersection	1931	NMI	0.977467802637199
+huang	gliph2_default vs GLIPH2 (raw 4185)	intersection	1931	pairwise_precision	0.8215488215488216
+huang	gliph2_default vs GLIPH2 (raw 4185)	intersection	1931	pairwise_recall	0.7236061684460261
+huang	gliph2_default vs GLIPH2 (raw 4185)	intersection	1931	pairwise_F1	0.7694733522548093
+huang	gliph2_default vs GLIPH2 (raw 4185)	input_full	7357	ARI	0.24529365560834482
+huang	gliph2_default vs GLIPH2 (raw 4185)	input_full	7357	NMI	0.924202489664697
+huang	gliph2_default vs GLIPH2 (raw 4185)	input_full	7357	pairwise_precision	0.6971428571428572
+huang	gliph2_default vs GLIPH2 (raw 4185)	input_full	7357	pairwise_recall	0.14888943129118867
+huang	gliph2_default vs GLIPH2 (raw 4185)	input_full	7357	pairwise_F1	0.24537409493161705
+huang	gliph2_default vs GLIPH2 (filtered 354)	intersection	423	ARI	0.777541074366251
+huang	gliph2_default vs GLIPH2 (filtered 354)	intersection	423	NMI	0.948306451070074
+huang	gliph2_default vs GLIPH2 (filtered 354)	intersection	423	pairwise_precision	0.9342560553633218
+huang	gliph2_default vs GLIPH2 (filtered 354)	intersection	423	pairwise_recall	0.6683168316831684
+huang	gliph2_default vs GLIPH2 (filtered 354)	intersection	423	pairwise_F1	0.7792207792207793
+huang	gliph2_default vs GLIPH2 (filtered 354)	input_full	3112	ARI	0.18686289295672334
+huang	gliph2_default vs GLIPH2 (filtered 354)	input_full	3112	NMI	0.9278431067593188
+huang	gliph2_default vs GLIPH2 (filtered 354)	input_full	3112	pairwise_precision	0.30857142857142855
+huang	gliph2_default vs GLIPH2 (filtered 354)	input_full	3112	pairwise_recall	0.1344286781179985
+huang	gliph2_default vs GLIPH2 (filtered 354)	input_full	3112	pairwise_F1	0.1872724119993064
+huang	gliph2_paper vs GLIPH2 (filtered 354)	intersection	398	ARI	0.8196541405941573
+huang	gliph2_paper vs GLIPH2 (filtered 354)	intersection	398	NMI	0.9557291577017275
+huang	gliph2_paper vs GLIPH2 (filtered 354)	intersection	398	pairwise_precision	0.9370748299319728
+huang	gliph2_paper vs GLIPH2 (filtered 354)	intersection	398	pairwise_recall	0.7307692307692307
+huang	gliph2_paper vs GLIPH2 (filtered 354)	intersection	398	pairwise_F1	0.8211624441132638
+huang	gliph2_paper vs GLIPH2 (filtered 354)	input_full	3060	ARI	0.19167045668287447
+huang	gliph2_paper vs GLIPH2 (filtered 354)	input_full	3060	NMI	0.9260380979501516
+huang	gliph2_paper vs GLIPH2 (filtered 354)	input_full	3060	pairwise_precision	0.32034883720930235
+huang	gliph2_paper vs GLIPH2 (filtered 354)	input_full	3060	pairwise_recall	0.13716704007966143
+huang	gliph2_paper vs GLIPH2 (filtered 354)	input_full	3060	pairwise_F1	0.19208645633606414
+huang	gliph2_paper+filtered vs GLIPH2 (filtered 354)	intersection	171	ARI	0.862620267034132
+huang	gliph2_paper+filtered vs GLIPH2 (filtered 354)	intersection	171	NMI	0.9682065000676355
+huang	gliph2_paper+filtered vs GLIPH2 (filtered 354)	intersection	171	pairwise_precision	0.9309623430962343
+huang	gliph2_paper+filtered vs GLIPH2 (filtered 354)	intersection	171	pairwise_recall	0.8120437956204379
+huang	gliph2_paper+filtered vs GLIPH2 (filtered 354)	intersection	171	pairwise_F1	0.8674463937621831
+huang	gliph2_paper+filtered vs GLIPH2 (filtered 354)	input_full	1339	ARI	0.19040942990332957
+huang	gliph2_paper+filtered vs GLIPH2 (filtered 354)	input_full	1339	NMI	0.8032431794985615
+huang	gliph2_paper+filtered vs GLIPH2 (filtered 354)	input_full	1339	pairwise_precision	0.7030015797788309
+huang	gliph2_paper+filtered vs GLIPH2 (filtered 354)	input_full	1339	pairwise_recall	0.11077918844909136
+huang	gliph2_paper+filtered vs GLIPH2 (filtered 354)	input_full	1339	pairwise_F1	0.1913978494623656
