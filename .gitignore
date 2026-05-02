@@ -1,0 +1,24 @@
+.Rproj.user/
+.Rhistory
+.RData
+.Ruserdata
+*.Rproj
+
+# renv
+renv/library/
+renv/local/
+renv/cellar/
+renv/python/
+renv/staging/
+
+# raw supplementary downloads (provenance recorded in SOURCE.md)
+data/*/raw/
+
+# ephemeral run outputs (the load-bearing assignments + metrics are tracked)
+results/raw/*.rds
+results/raw/*.log
+results/raw/gliph_*/
+results/raw/gliph2_*/
+
+*.log
+.DS_Store
