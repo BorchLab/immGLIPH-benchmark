@@ -1,7 +1,6 @@
 #!/usr/bin/env Rscript
 # Normalize Glanville 2017 and Huang 2020 supplementary data to the common
-# input schema consumed by every downstream tool (immGLIPH, GLIPH Perl, GLIPH2
-# binary).
+# input schema consumed by every downstream tool.
 #
 # Output schema (`cdr3_input.tsv`, tab-separated, header row):
 #   CDR3b   TRBV   TRBJ   patient   HLA   counts
@@ -44,121 +43,109 @@ valid_cdr3 <- function(x) {
 
 prep_glanville <- function() {
   raw_dir <- "data/glanville2017/raw"
-  # The Glanville 2017 supplement has multiple sheets across two XLSX files.
-  # The TCR table (Supp Table 1) has columns roughly:
-  #   CDR3b, TRBV, TRBJ, Subject, Antigen, HLA, Count
-  # When the raw file is in place, replace the path glob below.
-  xlsx_files <- dir_ls(raw_dir, glob = "*.xlsx")
-  if (length(xlsx_files) == 0) {
-    stop("No XLSX in ", raw_dir,
-         ". Download Glanville 2017 supplementary tables first (see SOURCE.md).")
+  src <- file.path(raw_dir, "41586_2017_BFnature22976_MOESM2_ESM.xlsx")
+  stopifnot(file.exists(src))
+
+  # MOESM2 sheet "Raw" — the canonical TCR table from the paper.
+  # Headers: DataSource, ID, subject, HLA, antigen-species, antigen,
+  #          peptide, Reads, TCRBV, TCRBJ, CDR-H1, CDR-H2, CDR3b, ...
+  raw <- read_excel(src, sheet = "Raw", .name_repair = "minimal")
+
+  # Find the CDR3b column — it follows CDR-H1/CDR-H2.
+  cdr3_col <- intersect(colnames(raw), c("CDR3b", "CDR3", "CDR-H3"))[1]
+  if (is.na(cdr3_col)) {
+    # Fall back: position 13 per visual header inspection.
+    cdr3_col <- colnames(raw)[13]
+    message("Using positional CDR3b column: ", cdr3_col)
   }
 
-  # TODO: once raw file is in place, set the correct file + sheet here.
-  tcr_path <- xlsx_files[1]
-  raw <- read_excel(tcr_path, sheet = 1)
-
-  # Column normalization. Adjust on first run if Glanville's actual headers differ.
-  col_map <- c(
-    CDR3b   = "CDR3b",
-    TRBV    = "TRBV",
-    TRBJ    = "TRBJ",
-    patient = "Subject",
-    HLA     = "HLA",
-    counts  = "Count",
-    antigen = "Antigen",
-    peptide = "Epitope",
-    mhc_allele = "MHC"
-  )
-  missing <- setdiff(col_map, colnames(raw))
-  if (length(missing) > 0) {
-    warning("Columns not found, will be NA: ",
-            paste(missing, collapse = ", "))
-  }
   raw <- raw %>%
-    rename(any_of(col_map)) %>%
+    rename(CDR3b = !!cdr3_col) %>%
     filter(valid_cdr3(CDR3b))
 
   input_tbl <- raw %>%
-    transmute(CDR3b,
-              TRBV   = if ("TRBV" %in% names(.)) TRBV else NA_character_,
-              TRBJ   = if ("TRBJ" %in% names(.)) TRBJ else NA_character_,
-              patient = if ("patient" %in% names(.)) patient else NA_character_,
-              HLA    = if ("HLA" %in% names(.)) HLA else NA_character_,
-              counts = if ("counts" %in% names(.)) counts else 1L) %>%
+    transmute(
+      CDR3b,
+      TRBV    = .data[["TCRBV"]],
+      TRBJ    = .data[["TCRBJ"]],
+      patient = .data[["subject"]],
+      HLA     = .data[["HLA"]],
+      counts  = suppressWarnings(as.integer(.data[["Reads"]]))
+    ) %>%
+    mutate(counts = ifelse(is.na(counts) | counts < 1, 1L, counts)) %>%
     distinct()
 
   labels_tbl <- raw %>%
-    filter(!is.na(antigen)) %>%
-    transmute(CDR3b, antigen,
-              peptide = if ("peptide" %in% names(.)) peptide else NA_character_,
-              mhc_allele = if ("mhc_allele" %in% names(.)) mhc_allele else NA_character_) %>%
+    filter(!is.na(.data[["antigen"]])) %>%
+    transmute(
+      CDR3b,
+      antigen    = .data[["antigen"]],
+      peptide    = .data[["peptide"]],
+      mhc_allele = .data[["HLA"]]
+    ) %>%
     distinct()
 
   out_dir <- "data/glanville2017"
   write_tsv(input_tbl, file.path(out_dir, "cdr3_input.tsv"))
   write_tsv(labels_tbl, file.path(out_dir, "antigen_labels.tsv"))
 
-  message(sprintf("Glanville: %d input sequences, %d labeled.",
-                  nrow(input_tbl), nrow(labels_tbl)))
+  message(sprintf(
+    "Glanville: %d input rows, %d distinct CDR3b, %d labeled rows.",
+    nrow(input_tbl), n_distinct(input_tbl$CDR3b), nrow(labels_tbl)
+  ))
 }
 
 prep_huang <- function() {
   raw_dir <- "data/huang2020/raw"
-  xlsx_files <- dir_ls(raw_dir, glob = "*.xlsx")
-  if (length(xlsx_files) == 0) {
-    stop("No XLSX in ", raw_dir,
-         ". Download Huang 2020 supplementary tables first (see SOURCE.md).")
-  }
+  src <- file.path(raw_dir, "41587_2020_505_MOESM3_ESM.xlsx")
+  stopifnot(file.exists(src))
 
-  # TODO: once raw file is in place, set the correct file + sheet here.
-  # Huang 2020 TCR table column names (typically): cdr3, V, J, subject, HLA,
-  # frequency, antigen.species, antigen.epitope, mhc.a
-  tcr_path <- xlsx_files[1]
-  raw <- read_excel(tcr_path, sheet = 1)
+  # MOESM3 sheet "bulk TCR" — clean tabular TCR table.
+  # Headers: CDR3b, Vb, Jb, CDR3a, Va, Ja, Individual, Counts
+  raw <- read_excel(src, sheet = "bulk TCR", .name_repair = "minimal")
 
-  col_map <- c(
-    CDR3b   = "cdr3",
-    TRBV    = "V",
-    TRBJ    = "J",
-    patient = "subject",
-    HLA     = "HLA",
-    counts  = "frequency",
-    antigen = "antigen.species",
-    peptide = "antigen.epitope",
-    mhc_allele = "mhc.a"
-  )
-  missing <- setdiff(col_map, colnames(raw))
-  if (length(missing) > 0) {
-    warning("Columns not found, will be NA: ",
-            paste(missing, collapse = ", "))
-  }
   raw <- raw %>%
-    rename(any_of(col_map)) %>%
+    rename(CDR3b = .data[["CDR3b"]]) %>%
     filter(valid_cdr3(CDR3b))
 
   input_tbl <- raw %>%
-    transmute(CDR3b,
-              TRBV   = if ("TRBV" %in% names(.)) TRBV else NA_character_,
-              TRBJ   = if ("TRBJ" %in% names(.)) TRBJ else NA_character_,
-              patient = if ("patient" %in% names(.)) patient else NA_character_,
-              HLA    = if ("HLA" %in% names(.)) HLA else NA_character_,
-              counts = if ("counts" %in% names(.)) counts else 1L) %>%
+    transmute(
+      CDR3b,
+      TRBV    = .data[["Vb"]],
+      TRBJ    = .data[["Jb"]],
+      patient = as.character(.data[["Individual"]]),
+      HLA     = NA_character_,
+      counts  = suppressWarnings(as.integer(.data[["Counts"]]))
+    ) %>%
+    mutate(counts = ifelse(is.na(counts) | counts < 1, 1L, counts)) %>%
     distinct()
 
-  labels_tbl <- raw %>%
-    filter(!is.na(antigen)) %>%
-    transmute(CDR3b, antigen,
-              peptide = if ("peptide" %in% names(.)) peptide else NA_character_,
-              mhc_allele = if ("mhc_allele" %in% names(.)) mhc_allele else NA_character_) %>%
+  # Antigen labels for Huang: bulk TCR is Mtb-specific by selection (TB cohort
+  # tetramer-sorted), so label all retained rows with antigen = "Mtb". For a
+  # finer-grained label, MOESM4 "known_CDR3" lists CDR3+epitope pairs — pull
+  # those in for any matching CDR3 to enrich the labels.
+  known_src <- file.path(raw_dir, "41587_2020_505_MOESM4_ESM.xlsx")
+  known <- read_excel(known_src, sheet = "known_CDR3", .name_repair = "minimal",
+                      col_names = c("CDR3b", "TRBV", "TRBJ", "peptide"))
+
+  labels_tbl <- input_tbl %>%
+    transmute(CDR3b, antigen = "Mtb",
+              peptide = NA_character_, mhc_allele = NA_character_) %>%
+    rows_update(
+      known %>% transmute(CDR3b, antigen = "Mtb (known epitope)",
+                          peptide = peptide, mhc_allele = NA_character_),
+      by = "CDR3b", unmatched = "ignore"
+    ) %>%
     distinct()
 
   out_dir <- "data/huang2020"
   write_tsv(input_tbl, file.path(out_dir, "cdr3_input.tsv"))
   write_tsv(labels_tbl, file.path(out_dir, "antigen_labels.tsv"))
 
-  message(sprintf("Huang: %d input sequences, %d labeled.",
-                  nrow(input_tbl), nrow(labels_tbl)))
+  message(sprintf(
+    "Huang: %d input rows, %d distinct CDR3b, %d labeled rows.",
+    nrow(input_tbl), n_distinct(input_tbl$CDR3b), nrow(labels_tbl)
+  ))
 }
 
 switch(opt$dataset,
