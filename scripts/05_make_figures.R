@@ -69,12 +69,18 @@ read_assign <- function(path, tool, dataset) {
     mutate(tool = tool, dataset = dataset)
 }
 
+dataset_labels <- c(
+  glanville = "Glanville 2017",
+  huang     = "Huang 2020"
+)
+
 assigns <- bind_rows(
   read_assign("results/raw/immgliph_glanville_assignments.tsv",  "immGLIPH",   "glanville"),
   read_assign("results/raw/reference_gliph_glanville.tsv",        "GLIPH",      "glanville"),
   read_assign("results/raw/immgliph_huang_assignments.tsv",       "immGLIPH",   "huang"),
   read_assign("results/raw/reference_gliph2_huang.tsv",           "GLIPH2",     "huang")
-)
+) %>%
+  mutate(dataset = factor(dataset_labels[dataset], levels = dataset_labels))
 
 sizes <- assigns %>%
   count(dataset, tool, cluster_id, name = "size") %>%
@@ -112,9 +118,9 @@ counts <- assigns %>%
 p3 <- ggplot(counts, aes(x = tool, y = value, fill = tool)) +
   geom_col(width = 0.65) +
   geom_text(aes(label = scales::comma(value)), vjust = -0.35, size = 3) +
-  facet_grid(stat ~ dataset, scales = "free_y") +
+  facet_grid(stat ~ dataset, scales = "free") +
   scale_fill_brewer(palette = "Set1", guide = "none") +
-  scale_y_continuous(expand = expansion(mult = c(0, 0.15))) +
+  scale_y_continuous(expand = expansion(mult = c(0, 0.18))) +
   labs(title = "Cluster and member counts", x = NULL, y = NULL)
 
 ggsave("results/figures/cluster_count_comparison.png", p3,
