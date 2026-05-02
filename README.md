@@ -1,6 +1,6 @@
 # immGLIPH-benchmark
 
-Concordance benchmark of [immGLIPH](https://github.com/theHumanBorch/immGLIPH) against the original
+Concordance benchmark of [immGLIPH](https://github.com/ncborcherding/immGLIPH) against the original
 [GLIPH](https://doi.org/10.1038/nature22976) (Glanville et al., 2017) and
 [GLIPH2](https://doi.org/10.1038/s41587-020-0505-4) (Huang et al., 2020) implementations.
 

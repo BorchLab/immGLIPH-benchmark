@@ -29,7 +29,7 @@ renv::install(c(
 renv::install("bioc::BiocParallel")
 
 # Pin immGLIPH at the version under Bioconductor review.
-renv::install("github::theHumanBorch/immGLIPH@v0.99.3")
+renv::install("github::ncborcherding/immGLIPH@v0.99.3")
 
 renv::snapshot(prompt = FALSE)
 
