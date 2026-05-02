@@ -19,8 +19,29 @@ theme_set(theme_minimal(base_size = 11) +
 
 # ---- 1. Concordance summary ------------------------------------------------
 
+tool_pair_labels <- c(
+  immgliph_vs_gliph  = "Glanville 2017: immGLIPH vs. GLIPH",
+  immgliph_vs_gliph2 = "Huang 2020: immGLIPH vs. GLIPH2"
+)
+
+universe_labels <- c(
+  intersection = "Intersection (CDR3s in both)",
+  input_full   = "Full immGLIPH input"
+)
+
+metric_labels <- c(
+  ARI         = "ARI",
+  NMI         = "NMI",
+  pairwise_F1 = "Pairwise F1"
+)
+
 m <- read_tsv("results/metrics.tsv", show_col_types = FALSE) %>%
-  filter(metric %in% c("ARI", "NMI", "pairwise_F1"))
+  filter(metric %in% names(metric_labels)) %>%
+  mutate(
+    metric    = factor(metric_labels[metric], levels = metric_labels),
+    universe  = factor(universe_labels[universe], levels = universe_labels),
+    tool_pair = factor(tool_pair_labels[tool_pair], levels = tool_pair_labels)
+  )
 
 p1 <- ggplot(m,
              aes(x = metric, y = value, fill = universe)) +
