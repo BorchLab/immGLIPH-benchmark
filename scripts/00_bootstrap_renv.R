@@ -28,8 +28,10 @@ renv::install(c(
 
 renv::install("bioc::BiocParallel")
 
-# Pin immGLIPH at the version under Bioconductor review.
-renv::install("github::ncborcherding/immGLIPH@v0.99.3")
+# Pin immGLIPH at the exact commit under Bioconductor review (v0.99.3 on the
+# bioc-review branch). Pinning by SHA keeps results reproducible even if the
+# branch moves.
+renv::install("github::BorchLab/immGLIPH@c36272c71883259ab3b3d659ab0765194c831ad6")
 
 renv::snapshot(prompt = FALSE)
 
