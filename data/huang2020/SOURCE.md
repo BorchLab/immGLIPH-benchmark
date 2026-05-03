@@ -26,11 +26,18 @@ antigen screening. *Nat Biotechnol* **38**, 1194–1202 (2020).
 - Columns: `CDR3b`, `TRBV`, `TRBJ`, `peptide` (no header in source; assigned by the script).
 - Used to upgrade `antigen = "Mtb"` to `antigen = "Mtb (known epitope)"` for matching CDR3s.
 
-`MOESM5.xlsx`, sheet **`GLIPH_group_member`** (published GLIPH2 output):
+`MOESM5.xlsx`, sheet **`GLIPH_group_member`** (raw GLIPH2 output, 4,185 clusters):
 - Columns: `index`, `pattern`, `Fisher_score`, `number_individual`, `number_unique_cdr3`,
-  `final_score`, `hla_score`, `vb_score`, ... plus per-cluster member CDR3s.
-- This is the cluster assignment from the original GLIPH2 binary run. Used as the
-  reference cluster vector for the concordance comparison.
+  `final_score`, `hla_score`, `vb_score`, ... plus per-cluster member CDR3s (`TcRb`).
+- The raw cluster assignments from the original GLIPH2 binary run.
+
+`MOESM5.xlsx`, sheet **`Filtered_list(354)`** (curated GLIPH2 output, 354 clusters):
+- Same column structure but only contains cluster `index` values; member CDR3s come from
+  joining against `GLIPH_group_member`.
+- These are the 354 specificity groups the Huang paper highlighted, filtered by ≥3 unique
+  TCRs from ≥3 individuals with V-gene bias P<0.05 (Methods, p. 1196).
+- This is the **canonical curated reference** used for the apples-to-apples concordance
+  comparison in `04_compute_metrics.R`.
 
 ## Filters applied
 
