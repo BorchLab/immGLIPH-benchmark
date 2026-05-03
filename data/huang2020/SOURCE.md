@@ -13,7 +13,7 @@ antigen screening. *Nat Biotechnol* **38**, 1194–1202 (2020).
 |---|---|---|
 | `41587_2020_505_MOESM3_ESM.xlsx` | `e5802812c0e3dc1344acc85ea2b02ced92a1870f81a92c4e7cd0bb3b8392a005` | yes — sheet `bulk TCR` is the input |
 | `41587_2020_505_MOESM4_ESM.xlsx` | `8e3d2afe7ae53a227e3587c3ab9d124d60d06cac986e5213c9bf57bd3d3ffb4e` | yes — sheet `known_CDR3` enriches antigen labels |
-| `41587_2020_505_MOESM5_ESM.xlsx` | `19f0baae842e2c1c9df8c4ec677e48f821a01fd9a4fd249dc3c7476788d050e7` | yes — published GLIPH2 cluster output for direct comparison |
+| `41587_2020_505_MOESM5_ESM.xlsx` | `19f0baae842e2c1c9df8c4ec677e48f821a01fd9a4fd249dc3c7476788d050e7` | yes — sheets `GLIPH_group_member` (raw 4,185 clusters) and `Filtered_list(354)` (curated 354 clusters) for the published GLIPH2 reference |
 | `41587_2020_505_MOESM6_ESM.xlsx` | `4768ecf12277e62e258dbef09b0a839a87a2535fa1caf6900458681d8a49b1b4` | no (Mtb antigen library annotations) |
 
 ## Sheet → schema map
